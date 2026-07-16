@@ -1,0 +1,16 @@
+.partner-marquee__track {
+  gap: clamp(16px, 3vw, 36px);
+}
+
+@keyframes partner-scroll {
+  to {
+    transform: translateX(calc(-50% - clamp(8px, 1.5vw, 18px)));
+  }
+}
+
+.kpi-flip-card__details {
+  z-index: 2;
+  background: linear-gradient(145deg, #f8fbf0 0%, #eaf7ee 100%);
+  border: 1px solid rgba(255, 255, 255, 0.96);
+  box-shadow: 0 16px 34px rgba(8, 47, 63, 0.16), inset 0 1px #fff;
+}

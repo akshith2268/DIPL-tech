@@ -1,0 +1,33 @@
+.reveal-observer {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 650ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+    transform 650ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+}
+
+.reveal-observer--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.home-video-hero__content--animated {
+  animation: home-content-in 700ms ease-out both;
+}
+
+@keyframes home-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-observer,
+  .home-video-hero__content--animated {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+}
