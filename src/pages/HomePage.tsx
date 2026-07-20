@@ -96,7 +96,8 @@ export default function HomePage() {
                 className="button button--secondary"
                 href="https://www.linkedin.com/in/abhishekgiri9552/"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
+                aria-label="View Abhishek Giri's LinkedIn profile"
               >
                 <span>LinkedIn</span>
                 <span className="founder-card__button-arrow" aria-hidden="true">â†’</span>

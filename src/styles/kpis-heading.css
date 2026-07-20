@@ -1,0 +1,42 @@
+body:has(.kpis-page-heading) {
+  background: linear-gradient(
+    180deg,
+    var(--section-cream) 0%,
+    var(--foam) 50%,
+    var(--section-mint) 100%
+  );
+}
+
+body:has(.kpis-page-heading) main > section.section,
+body:has(.kpis-page-heading) .site-footer {
+  background: transparent;
+}
+
+.kpis-page-heading {
+  display: grid;
+  place-items: center;
+  min-height: clamp(150px, 22vw, 230px);
+  padding-block: clamp(2.25rem, 5vw, 4rem);
+  text-align: center;
+}
+
+.kpis-page-heading h1 {
+  max-width: 18ch;
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 4.25rem);
+  line-height: 1;
+  text-wrap: balance;
+}
+
+@media (max-width: 520px) {
+  .kpis-page-heading {
+    min-height: 132px;
+    padding-block: 1.85rem;
+  }
+
+  .kpis-page-heading h1 {
+    max-width: 15ch;
+    font-size: clamp(2rem, 9vw, 2.8rem);
+    line-height: 1.05;
+  }
+}

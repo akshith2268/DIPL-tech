@@ -23,13 +23,13 @@ export const assets = {
   },
   recognition: {
     iitKanpur: `${LOCAL_ROOT}/images/recognition/iit-kanpur.jpeg`,
-    dpiit: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/awards/dpiit.webp",
-    sppu: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/awards/sppu.webp",
+    dpiit: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/awards/dpiit.png",
+    sppu: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/awards/sppu.jpeg",
     dainikBhaskar: `${LOCAL_ROOT}/images/recognition/dainik-bhaskar.jpeg`,
-    jspm: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/awards/JSPM%20REcognition.webp",
+    jspm: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/awards/JSPM%20REcognition.jpeg",
   },
   team: {
-    abhishekGiri: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/pfp/fpfp.webp",
+    abhishekGiri: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/pfp/abpfp.png",
     abhilashaGiri: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/pfp/ab.webp",
     lalitBadgujar: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/pfp/lb.webp",
     nikhilBejjaram: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/pfp/nb.webp",
@@ -52,8 +52,8 @@ export const assets = {
     water: `${LOCAL_ROOT}/images/sdgs/sdg-14-water.webp`,
   },
   articles: {
-    engineer: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/blog/measanenginner.webp",
-    ceo: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/blog/measaceo.webp",
+    engineer: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/blog/measanengineer.jpg",
+    ceo: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/blog/measaceo.jpg",
   },
   videos: {
     homeHero: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/videos/Drith%20Infra%20Final.mp4",

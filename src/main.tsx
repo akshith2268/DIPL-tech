@@ -7,6 +7,7 @@ import "./styles/index.css";
 import "./styles/performance.css";
 import "./styles/partners.css";
 import "./styles/admin.css";
+import "./styles/header.css";
 
 // React mounts into <div id="root"> from index.html. Do not rename that id
 // unless this lookup is updated too.

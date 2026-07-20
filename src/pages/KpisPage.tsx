@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { ContactCta } from "../components/sections/ContactCta";
-import { PageHero } from "../components/sections/PageHero";
 import { Seo } from "../components/system/Seo";
 import { KpiCard } from "../features/kpis/KpiCard";
 import { kpiCards } from "../features/kpis/kpiCards";
+import "../styles/kpis-heading.css";
 
 export default function KpisPage() {
   const [openCard, setOpenCard] = useState<number | null>(null);
@@ -15,17 +15,9 @@ export default function KpisPage() {
         description="Explore Drith Infra's coastal resilience KPIs across wave performance, carbon value, ecology, lifecycle cost, and market potential."
         path="/kpis"
       />
-      <PageHero
-        eyebrow="KPIs"
-        title="Key performance indicators for nature-aligned coastal infrastructure."
-        body="Each card shows the core metric first. Press a card once for more details; press it again to close."
-        aside={
-          <div className="page-hero__statement">
-            <span>Interaction</span>
-            <strong>Press card for full KPI context.</strong>
-          </div>
-        }
-      />
+      <section className="kpis-page-heading shell" aria-labelledby="kpis-page-title">
+        <h1 id="kpis-page-title">Key Performance Indicators</h1>
+      </section>
 
       {/* Interactive KPI grid. Clicking a card toggles the kpi-flip-card--open CSS state. */}
       <section className="section kpis-showcase">

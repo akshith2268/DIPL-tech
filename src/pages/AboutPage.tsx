@@ -89,7 +89,15 @@ export default function AboutPage() {
                 <span>{member.role}</span>
                 <h3>{member.name}</h3>
                 <p>“{member.quote}”</p>
-                <ButtonLink to="/about" variant="text">Know Me</ButtonLink>
+                <a
+                  className="button button--text"
+                  href={member.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`View ${member.name}'s LinkedIn profile`}
+                >
+                  Know Me
+                </a>
               </Reveal>
             ))}
           </div>

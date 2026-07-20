@@ -28,4 +28,5 @@ export interface TeamMember {
   role: string;
   quote: string;
   image?: string;
+  linkedin: string;
 }
