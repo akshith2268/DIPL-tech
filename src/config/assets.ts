@@ -30,7 +30,7 @@ export const assets = {
   },
   team: {
     abhishekGiri: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/pfp/abpfp.png",
-    abhilashaGiri: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/pfp/ab.webp",
+    abhilashaGiri: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/pfp/agpfp.png",
     lalitBadgujar: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/pfp/lb.webp",
     nikhilBejjaram: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/pfp/nb.webp",
   },
