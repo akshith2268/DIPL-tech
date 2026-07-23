@@ -100,7 +100,7 @@ export default function HomePage() {
                 aria-label="View Abhishek Giri's LinkedIn profile"
               >
                 <span>LinkedIn</span>
-                <span className="founder-card__button-arrow" aria-hidden="true">â†’</span>
+                <span className="founder-card__button-arrow" aria-hidden="true">→</span>
               </a>
             </div>
           </Reveal>

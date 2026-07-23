@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import { AnalyticsTracker } from "../system/AnalyticsTracker";
 import { OrganizationSchema } from "../system/OrganizationSchema";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
@@ -15,5 +16,13 @@ export function SiteLayout() {
 
   // main#main-content is the shared wrapper for all public page content.
   // Header and Footer are kept here so individual pages stay focused on content.
-  return <><OrganizationSchema /><Header /><main id="main-content"><Outlet /></main><Footer /></>;
+  return (
+    <>
+      <AnalyticsTracker />
+      <OrganizationSchema />
+      <Header />
+      <main id="main-content"><Outlet /></main>
+      <Footer />
+    </>
+  );
 }

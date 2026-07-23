@@ -12,8 +12,8 @@ export const assets = {
   },
   projects: {
     coast: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/Project/tatrakshak.webp",
-    chaitanya: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/Project/tatchaitanya.webp",
-    sagarMitra: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/Project/TATSagarMitra.webp",
+    chaitanya: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/Project/tatc.png",
+    sagarMitra: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/Project/tats.png",
     tatrakshakCoast: `${LOCAL_ROOT}/images/projects/tatrakshak-coast.jpg`,
   },
   comparisons: {

@@ -1,6 +1,7 @@
 # Supabase contact inbox setup
 
-The website uses the `contacts` table for public contact-form inserts and the `/admin` page for authenticated reads.
+The website uses the `contacts` table for public contact-form inserts and the
+`/admin` page for allowlisted, MFA-verified reads.
 
 1. Open the Supabase SQL editor for project `ovqxuakoekllsxzvnmvx`.
 2. Run `migrations/202607150001_create_contacts.sql`.
@@ -16,7 +17,29 @@ on conflict (user_id) do nothing;
 5. Copy `.env.example` to `.env.local` and replace `VITE_SUPABASE_ANON_KEY` with the project's public anon key.
 6. Restart the Vite development server after changing environment variables.
 
-The RLS policies allow anonymous inserts but prevent anonymous reads. Only authenticated users present in `public.admin_users` can read or update submissions.
+The first migration allows anonymous inserts but prevents anonymous reads.
+Admin 2.0 adds mandatory TOTP MFA and analytics as described below.
+
+## Admin 2.0
+
+1. Run `migrations/202607240001_admin_2_0.sql` after the contact migrations.
+2. Keep each administrator in both Supabase Authentication and
+   `public.admin_users`.
+3. The administrator signs in at `/admin` and enrols an authenticator app on
+   first login. Contacts and analytics require both allowlist membership and an
+   `aal2` session.
+4. Deploy first-party production analytics:
+
+```powershell
+npx supabase functions deploy track-analytics --use-api
+```
+
+The function uses the automatically provided `SUPABASE_URL` and
+`SUPABASE_SERVICE_ROLE_KEY`. Those values must never be added to Vite
+environment variables.
+
+See `ADMIN-HANDOVER.md` for administrator onboarding, removal, authenticator
+reset, and deployment steps.
 
 ## Resend contact email automation
 

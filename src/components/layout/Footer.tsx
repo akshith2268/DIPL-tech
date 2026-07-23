@@ -21,9 +21,9 @@ const projectIcons: Record<string, IconName> = {
 const socialLinks: { label: string; href: string; icon: IconName }[] = [
   { label: "Instagram", href: "https://www.instagram.com/drithinfra/", icon: "instagram" },
   {
-    label: "Facebook",
-    href: "https://www.facebook.com/people/Drith-Infra-PvtLtd/61581087779751/?rdid=srBC9N69p1BvIXYZ&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F17GZ9CGTyr%2F",
-    icon: "facebook",
+    label: "Gmail",
+    href: "mailto:drithinfra.pvt@gmail.com",
+    icon: "mail",
   },
   { label: "LinkedIn", href: "https://www.linkedin.com/company/drith-infra-pvt-ltd/", icon: "linkedin" },
 ];

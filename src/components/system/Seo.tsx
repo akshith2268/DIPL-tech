@@ -7,6 +7,7 @@ interface SeoProps {
   path?: string;
   image?: string;
   type?: "website" | "article";
+  robots?: string;
 }
 
 function setMeta(selector: string, key: "name" | "property", name: string, value: string) {
@@ -19,7 +20,14 @@ function setMeta(selector: string, key: "name" | "property", name: string, value
   element.content = value;
 }
 
-export function Seo({ title, description, path = "/", image = assets.projects.coast, type = "website" }: SeoProps) {
+export function Seo({
+  title,
+  description,
+  path = "/",
+  image = assets.projects.coast,
+  type = "website",
+  robots = "index, follow",
+}: SeoProps) {
   useEffect(() => {
     const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
     const canonicalUrl = new URL(path, siteUrl).toString();
@@ -32,6 +40,7 @@ export function Seo({ title, description, path = "/", image = assets.projects.co
     setMeta('meta[property="og:url"]', "property", "og:url", canonicalUrl);
     setMeta('meta[property="og:image"]', "property", "og:image", imageUrl);
     setMeta('meta[name="twitter:card"]', "name", "twitter:card", "summary_large_image");
+    setMeta('meta[name="robots"]', "name", "robots", robots);
 
     let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!canonical) {
@@ -40,6 +49,6 @@ export function Seo({ title, description, path = "/", image = assets.projects.co
       document.head.append(canonical);
     }
     canonical.href = canonicalUrl;
-  }, [description, image, path, title, type]);
+  }, [description, image, path, robots, title, type]);
   return null;
 }
