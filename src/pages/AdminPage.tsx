@@ -7,7 +7,7 @@ import {
   type FormEvent,
   type ReactNode,
 } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Seo } from "../components/system/Seo";
 import { assets } from "../config/assets";
 import {
@@ -49,6 +49,38 @@ type GateStage =
   | "denied";
 
 type RequestStatus = "idle" | "loading" | "error";
+
+type AnalyticsDetailView =
+  | "traffic-overview"
+  | "performance"
+  | "traffic-trend"
+  | "top-pages"
+  | "countries"
+  | "devices"
+  | "referrers"
+  | "blog-overview"
+  | "blog-trend"
+  | "blog-referrers";
+
+type DashboardView = AnalyticsDetailView | "enquiries";
+
+const dashboardViews = new Set<DashboardView>([
+  "traffic-overview",
+  "performance",
+  "traffic-trend",
+  "top-pages",
+  "countries",
+  "devices",
+  "referrers",
+  "blog-overview",
+  "blog-trend",
+  "blog-referrers",
+  "enquiries",
+]);
+
+function isDashboardView(value: string | null): value is DashboardView {
+  return value !== null && dashboardViews.has(value as DashboardView);
+}
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-IN", {
@@ -108,6 +140,29 @@ function SummaryCard({
       <strong>{value}</strong>
       <small>{note}</small>
     </article>
+  );
+}
+
+function InsightCard({
+  label,
+  value,
+  note,
+  onClick,
+}: {
+  label: string;
+  value: string | number;
+  note: string;
+  onClick: () => void;
+}) {
+  return (
+    <button className="admin-insight-card" type="button" onClick={onClick}>
+      <span className="admin-insight-card__label">{label}</span>
+      <strong title={String(value)}>{value}</strong>
+      <span className="admin-insight-card__footer">
+        <small>{note}</small>
+        <span aria-hidden="true">→</span>
+      </span>
+    </button>
   );
 }
 
@@ -198,6 +253,274 @@ function RankedList({
   );
 }
 
+function AnalyticsDetailPage({
+  analytics,
+  blogTrafficShare,
+  rangeLabel,
+  view,
+  onBack,
+}: {
+  analytics: AnalyticsDashboard | null;
+  blogTrafficShare: number;
+  rangeLabel: string;
+  view: AnalyticsDetailView;
+  onBack: () => void;
+}) {
+  const summary = analytics?.summary;
+  let eyebrow = "Website traffic";
+  let title = "Traffic overview";
+  let description = `A focused view for ${rangeLabel.toLowerCase()}.`;
+  let content: ReactNode;
+
+  switch (view) {
+    case "performance":
+      title = "Real-user performance";
+      description =
+        "Load time and Largest Contentful Paint collected from production visits.";
+      content = (
+        <>
+          <div className="admin-summary-grid admin-summary-grid--detail">
+            <SummaryCard
+              label="Median load"
+              value={formatDuration(summary?.medianLoadMs ?? null)}
+              note="Typical full navigation"
+            />
+            <SummaryCard
+              label="p75 LCP"
+              value={formatDuration(summary?.p75LcpMs ?? null)}
+              note="75th percentile"
+            />
+          </div>
+          <div className="admin-detail-note">
+            <h2>How to read this</h2>
+            <p>
+              Median load represents the middle production navigation. p75 LCP
+              shows the experience of the slower quarter of measured visits.
+            </p>
+          </div>
+        </>
+      );
+      break;
+    case "traffic-trend":
+      title = "Traffic trend";
+      description = "Page views across the selected reporting window.";
+      content = (
+        <article className="admin-data-panel admin-data-panel--chart">
+          <header>
+            <div>
+              <span>Traffic trend</span>
+              <strong>Page views over time</strong>
+            </div>
+            <small>{rangeLabel}</small>
+          </header>
+          <TrendChart points={analytics?.trend || []} />
+        </article>
+      );
+      break;
+    case "top-pages":
+      title = "Top pages";
+      description = "The public routes receiving the most measured page views.";
+      content = (
+        <article className="admin-data-panel">
+          <header><strong>Pages</strong></header>
+          <RankedList
+            items={analytics?.topPages || []}
+            emptyText="No production page visits yet."
+          />
+        </article>
+      );
+      break;
+    case "countries":
+      title = "Visitor countries";
+      description =
+        "Country-level totals supplied by the production edge request.";
+      content = (
+        <article className="admin-data-panel">
+          <header><strong>Countries</strong></header>
+          <RankedList
+            items={analytics?.topCountries || []}
+            emptyText="Country data is not available yet."
+            kind="country"
+          />
+        </article>
+      );
+      break;
+    case "devices":
+      title = "Device categories";
+      description = "Coarse desktop, tablet, and mobile traffic totals.";
+      content = (
+        <article className="admin-data-panel">
+          <header><strong>Devices</strong></header>
+          <RankedList
+            items={analytics?.topDevices || []}
+            emptyText="Device data is not available yet."
+            kind="device"
+          />
+        </article>
+      );
+      break;
+    case "referrers":
+      title = "Traffic referrers";
+      description = "Domains that sent visitors to public website routes.";
+      content = (
+        <article className="admin-data-panel">
+          <header><strong>Referrers</strong></header>
+          <RankedList
+            items={analytics?.topReferrers || []}
+            emptyText="Referral data is not available yet."
+          />
+        </article>
+      );
+      break;
+    case "blog-overview":
+      eyebrow = "Blog dashboard";
+      title = "Blog visit overview";
+      description =
+        "Overall visits to /blogs only; this does not claim article completion.";
+      content = (
+        <>
+          <div className="admin-summary-grid admin-summary-grid--detail">
+            <SummaryCard
+              label="Blog visits"
+              value={summary?.blogViews || 0}
+              note={rangeLabel}
+            />
+            <SummaryCard
+              label="Blog sessions"
+              value={summary?.blogSessions || 0}
+              note="Unique sessions on /blogs"
+            />
+            <SummaryCard
+              label="Traffic share"
+              value={`${blogTrafficShare}%`}
+              note="Share of all page views"
+            />
+          </div>
+          <div className="admin-detail-split">
+            <article className="admin-data-panel admin-data-panel--chart">
+              <header>
+                <div>
+                  <span>Blog trend</span>
+                  <strong>Visits to /blogs</strong>
+                </div>
+              </header>
+              <TrendChart
+                points={analytics?.trend || []}
+                series="blogViews"
+                secondary
+              />
+            </article>
+            <article className="admin-data-panel">
+              <header><strong>Blog referral sources</strong></header>
+              <RankedList
+                items={analytics?.blogReferrers || []}
+                emptyText="No Blog referral data yet."
+              />
+            </article>
+          </div>
+        </>
+      );
+      break;
+    case "blog-trend":
+      eyebrow = "Blog dashboard";
+      title = "Blog traffic trend";
+      description = "Visits to /blogs across the selected reporting window.";
+      content = (
+        <article className="admin-data-panel admin-data-panel--chart">
+          <header>
+            <div>
+              <span>Blog trend</span>
+              <strong>Visits to /blogs</strong>
+            </div>
+            <small>{rangeLabel}</small>
+          </header>
+          <TrendChart
+            points={analytics?.trend || []}
+            series="blogViews"
+            secondary
+          />
+        </article>
+      );
+      break;
+    case "blog-referrers":
+      eyebrow = "Blog dashboard";
+      title = "Blog referral sources";
+      description = "Domains that sent visitors to the Blog page.";
+      content = (
+        <article className="admin-data-panel">
+          <header><strong>Blog referral sources</strong></header>
+          <RankedList
+            items={analytics?.blogReferrers || []}
+            emptyText="No Blog referral data yet."
+          />
+        </article>
+      );
+      break;
+    case "traffic-overview":
+    default:
+      content = (
+        <>
+          <div className="admin-summary-grid admin-summary-grid--detail">
+            <SummaryCard
+              label="Page views"
+              value={summary?.pageViews || 0}
+              note="Public route loads"
+            />
+            <SummaryCard
+              label="Sessions"
+              value={summary?.sessions || 0}
+              note="Unique browser sessions"
+            />
+            <SummaryCard
+              label="Blog visits"
+              value={summary?.blogViews || 0}
+              note="Visits to /blogs"
+            />
+          </div>
+          <div className="admin-detail-split">
+            <article className="admin-data-panel admin-data-panel--chart">
+              <header>
+                <div>
+                  <span>Traffic trend</span>
+                  <strong>Page views over time</strong>
+                </div>
+                <small>{rangeLabel}</small>
+              </header>
+              <TrendChart points={analytics?.trend || []} />
+            </article>
+            <article className="admin-data-panel">
+              <header><strong>Top pages</strong></header>
+              <RankedList
+                items={analytics?.topPages || []}
+                emptyText="No production page visits yet."
+              />
+            </article>
+          </div>
+        </>
+      );
+      break;
+  }
+
+  return (
+    <article className="admin-detail-page">
+      <button className="admin-contact-view__back" type="button" onClick={onBack}>
+        <span aria-hidden="true">←</span> Back to overview
+      </button>
+      <header className="admin-detail-page__header">
+        <div>
+          <p className="eyebrow">{eyebrow}</p>
+          <h1>{title}</h1>
+          <p>{description}</p>
+        </div>
+        <span>{rangeLabel}</span>
+      </header>
+      <section className="admin-detail-page__content glass-panel">
+        {content}
+      </section>
+    </article>
+  );
+}
+
 function AccessCard({
   children,
   eyebrow,
@@ -222,6 +545,11 @@ function AccessCard({
 }
 
 export default function AdminPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const requestedView = searchParams.get("view");
+  const dashboardView = isDashboardView(requestedView)
+    ? requestedView
+    : null;
   const [gateStage, setGateStage] = useState<GateStage>("loading");
   const [adminAccess, setAdminAccess] = useState<AdminAccess | null>(null);
   const [email, setEmail] = useState("");
@@ -388,6 +716,12 @@ export default function AdminPage() {
     void loadContacts();
   }, [loadContacts]);
 
+  useEffect(() => {
+    if (dashboardView !== "enquiries") {
+      setSelectedContact(null);
+    }
+  }, [dashboardView]);
+
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setAuthStatus("loading");
@@ -441,6 +775,7 @@ export default function AdminPage() {
     setAnalytics(null);
     setContacts([]);
     setSelectedContact(null);
+    setSearchParams({}, { replace: true });
     setAuthStatus("idle");
     setAuthMessage("");
   }
@@ -507,10 +842,26 @@ export default function AdminPage() {
     setSelectedContact(null);
     void loadContacts();
     window.requestAnimationFrame(() => {
-      document.getElementById("admin-enquiries")?.scrollIntoView({
+      window.scrollTo({
         behavior: "smooth",
-        block: "start",
+        top: 0,
       });
+    });
+  }
+
+  function openDashboardView(view: DashboardView) {
+    setSelectedContact(null);
+    setSearchParams({ view });
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ behavior: "smooth", top: 0 });
+    });
+  }
+
+  function returnToOverview() {
+    setSelectedContact(null);
+    setSearchParams({});
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ behavior: "smooth", top: 0 });
     });
   }
 
@@ -520,6 +871,13 @@ export default function AdminPage() {
         (analytics.summary.blogViews / analytics.summary.pageViews) * 100,
       )
       : 0;
+  const rangeLabel =
+    rangeOptions.find((item) => item.key === range)?.label || "Selected range";
+  const topPage = analytics?.topPages[0];
+  const topCountry = analytics?.topCountries[0];
+  const topDevice = analytics?.topDevices[0];
+  const topReferrer = analytics?.topReferrers[0];
+  const topBlogReferrer = analytics?.blogReferrers[0];
 
   return (
     <>
@@ -871,8 +1229,30 @@ export default function AdminPage() {
             </article>
           ) : null}
 
-          {gateStage === "ready" && !selectedContact ? (
-            <div className="admin-dashboard">
+          {gateStage === "ready" &&
+          !selectedContact &&
+          dashboardView &&
+          dashboardView !== "enquiries" ? (
+            <AnalyticsDetailPage
+              analytics={analytics}
+              blogTrafficShare={blogTrafficShare}
+              rangeLabel={rangeLabel}
+              view={dashboardView}
+              onBack={returnToOverview}
+            />
+          ) : null}
+
+          {gateStage === "ready" &&
+          !selectedContact &&
+          dashboardView === "enquiries" ? (
+            <div className="admin-dashboard admin-dashboard--enquiries">
+              <button
+                className="admin-contact-view__back"
+                type="button"
+                onClick={returnToOverview}
+              >
+                <span aria-hidden="true">←</span> Back to overview
+              </button>
               <header className="admin-dashboard__hero">
                 <div>
                   <p className="eyebrow">Secure operations</p>
@@ -1210,6 +1590,245 @@ export default function AdminPage() {
                     ) : null}
                   </>
                 )}
+              </section>
+            </div>
+          ) : null}
+
+          {gateStage === "ready" &&
+          !selectedContact &&
+          dashboardView === null ? (
+            <div className="admin-dashboard admin-dashboard--overview">
+              <header className="admin-dashboard__hero admin-dashboard__hero--compact">
+                <div>
+                  <p className="eyebrow">Secure operations</p>
+                  <h1>Admin overview</h1>
+                  <p>
+                    Scan the essentials, then open any card for the full view.
+                  </p>
+                </div>
+                <nav className="admin-dashboard__anchors" aria-label="Dashboard sections">
+                  <button type="button" onClick={() => openDashboardView("traffic-overview")}>
+                    Traffic
+                  </button>
+                  <button type="button" onClick={() => openDashboardView("blog-overview")}>
+                    Blog
+                  </button>
+                  <button type="button" onClick={() => openDashboardView("enquiries")}>
+                    Enquiries
+                  </button>
+                </nav>
+              </header>
+
+              <section className="admin-overview-board glass-panel">
+                <div className="admin-overview-toolbar">
+                  <div className="admin-range-filter" aria-label="Analytics date range">
+                    {rangeOptions.map((option) => (
+                      <button
+                        aria-pressed={range === option.key}
+                        className={range === option.key ? "is-active" : ""}
+                        key={option.key}
+                        type="button"
+                        onClick={() => setRange(option.key)}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    className="admin-refresh"
+                    disabled={analyticsStatus === "loading"}
+                    type="button"
+                    onClick={() => void loadAnalytics()}
+                  >
+                    {analyticsStatus === "loading" ? "Refreshing…" : "Refresh"}
+                  </button>
+                </div>
+
+                {analyticsMessage ? (
+                  <p className="admin-message admin-message--error" role="alert">
+                    {analyticsMessage}
+                  </p>
+                ) : null}
+
+                <div className="admin-overview-group">
+                  <header>
+                    <div>
+                      <p className="eyebrow">Website traffic</p>
+                      <h2>Audience and performance</h2>
+                    </div>
+                    <small>{rangeLabel}</small>
+                  </header>
+                  <div
+                    className={`admin-mini-grid ${
+                      analyticsStatus === "loading" ? "is-loading" : ""
+                    }`}
+                  >
+                    <InsightCard
+                      label="Page views"
+                      value={analytics?.summary.pageViews || 0}
+                      note="Public routes"
+                      onClick={() => openDashboardView("traffic-overview")}
+                    />
+                    <InsightCard
+                      label="Sessions"
+                      value={analytics?.summary.sessions || 0}
+                      note="Unique browsers"
+                      onClick={() => openDashboardView("traffic-overview")}
+                    />
+                    <InsightCard
+                      label="Blog visits"
+                      value={analytics?.summary.blogViews || 0}
+                      note="Visits to /blogs"
+                      onClick={() => openDashboardView("blog-overview")}
+                    />
+                    <InsightCard
+                      label="Median load"
+                      value={formatDuration(analytics?.summary.medianLoadMs ?? null)}
+                      note="Typical navigation"
+                      onClick={() => openDashboardView("performance")}
+                    />
+                    <InsightCard
+                      label="p75 LCP"
+                      value={formatDuration(analytics?.summary.p75LcpMs ?? null)}
+                      note="Slower-quarter view"
+                      onClick={() => openDashboardView("performance")}
+                    />
+                    <InsightCard
+                      label="Traffic trend"
+                      value={analytics?.summary.pageViews || 0}
+                      note="Open timeline"
+                      onClick={() => openDashboardView("traffic-trend")}
+                    />
+                    <InsightCard
+                      label="Top page"
+                      value={topPage?.label || "No data"}
+                      note={topPage ? `${topPage.value} views` : "Open ranking"}
+                      onClick={() => openDashboardView("top-pages")}
+                    />
+                    <InsightCard
+                      label="Top country"
+                      value={
+                        topCountry
+                          ? displayMetricLabel(topCountry.label, "country")
+                          : "No data"
+                      }
+                      note={topCountry ? `${topCountry.value} visits` : "Open countries"}
+                      onClick={() => openDashboardView("countries")}
+                    />
+                    <InsightCard
+                      label="Top device"
+                      value={
+                        topDevice
+                          ? displayMetricLabel(topDevice.label, "device")
+                          : "No data"
+                      }
+                      note={topDevice ? `${topDevice.value} visits` : "Open devices"}
+                      onClick={() => openDashboardView("devices")}
+                    />
+                    <InsightCard
+                      label="Top referrer"
+                      value={topReferrer?.label || "No data"}
+                      note={topReferrer ? `${topReferrer.value} visits` : "Open referrers"}
+                      onClick={() => openDashboardView("referrers")}
+                    />
+                  </div>
+                </div>
+
+                <div className="admin-overview-group">
+                  <header>
+                    <div>
+                      <p className="eyebrow">Blog dashboard</p>
+                      <h2>Blog page visits</h2>
+                    </div>
+                    <Link className="admin-section-link" to="/blogs">
+                      View Blog <span aria-hidden="true">→</span>
+                    </Link>
+                  </header>
+                  <div className="admin-mini-grid">
+                    <InsightCard
+                      label="Blog visits"
+                      value={analytics?.summary.blogViews || 0}
+                      note={rangeLabel}
+                      onClick={() => openDashboardView("blog-overview")}
+                    />
+                    <InsightCard
+                      label="Blog sessions"
+                      value={analytics?.summary.blogSessions || 0}
+                      note="Unique sessions"
+                      onClick={() => openDashboardView("blog-overview")}
+                    />
+                    <InsightCard
+                      label="Traffic share"
+                      value={`${blogTrafficShare}%`}
+                      note="Of all page views"
+                      onClick={() => openDashboardView("blog-overview")}
+                    />
+                    <InsightCard
+                      label="Blog trend"
+                      value={analytics?.summary.blogViews || 0}
+                      note="Open timeline"
+                      onClick={() => openDashboardView("blog-trend")}
+                    />
+                    <InsightCard
+                      label="Top referral"
+                      value={topBlogReferrer?.label || "No data"}
+                      note={
+                        topBlogReferrer
+                          ? `${topBlogReferrer.value} visits`
+                          : "Open sources"
+                      }
+                      onClick={() => openDashboardView("blog-referrers")}
+                    />
+                  </div>
+                </div>
+
+                <div className="admin-overview-group">
+                  <header>
+                    <div>
+                      <p className="eyebrow">Contact enquiries</p>
+                      <h2>Inbox summary</h2>
+                    </div>
+                    <button
+                      className="admin-section-link"
+                      type="button"
+                      onClick={() => openDashboardView("enquiries")}
+                    >
+                      Open inbox <span aria-hidden="true">→</span>
+                    </button>
+                  </header>
+                  <div className="admin-mini-grid admin-mini-grid--enquiries">
+                    <InsightCard
+                      label="Inbox"
+                      value={contactCounts.inbox}
+                      note="All enquiries"
+                      onClick={() => openDashboardView("enquiries")}
+                    />
+                    <InsightCard
+                      label="Unread"
+                      value={contactCounts.unread}
+                      note="Needs attention"
+                      onClick={() => {
+                        changeContactFilter("unread");
+                        openDashboardView("enquiries");
+                      }}
+                    />
+                    <InsightCard
+                      label="Read"
+                      value={contactCounts.read}
+                      note="Already opened"
+                      onClick={() => {
+                        changeContactFilter("read");
+                        openDashboardView("enquiries");
+                      }}
+                    />
+                    <InsightCard
+                      label="Latest enquiry"
+                      value={contacts[0]?.name || "No messages"}
+                      note="Open the message list"
+                      onClick={() => openDashboardView("enquiries")}
+                    />
+                  </div>
+                </div>
               </section>
             </div>
           ) : null}
