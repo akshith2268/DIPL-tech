@@ -1,5 +1,5 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { App } from "./App";
 import { ErrorBoundary } from "./components/system/ErrorBoundary";
@@ -18,7 +18,7 @@ if (!root) {
   throw new Error("Application root element was not found.");
 }
 
-createRoot(root).render(
+const app = (
   <StrictMode>
     {/* Catches rendering crashes so the website does not become a blank page. */}
     <ErrorBoundary>
@@ -27,5 +27,11 @@ createRoot(root).render(
         <App />
       </BrowserRouter>
     </ErrorBoundary>
-  </StrictMode>,
+  </StrictMode>
 );
+
+if (root.hasChildNodes()) {
+  hydrateRoot(root, app);
+} else {
+  createRoot(root).render(app);
+}
