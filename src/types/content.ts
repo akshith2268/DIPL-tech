@@ -21,6 +21,7 @@ export interface Recognition {
   image: string;
   imageAlt: string;
   date: string;
+  expandable?: boolean;
 }
 
 export interface TeamMember {

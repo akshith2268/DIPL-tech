@@ -13,8 +13,8 @@ export function Header() {
   return (
     <header className={`site-header ${isHome ? "site-header--home" : ""} ${isMenuOpen ? "site-header--menu-open" : ""}`.trim()}>
       <div className={`site-header__inner shell ${isHome ? "" : "glass-panel"}`.trim()}>
-        <Link className="brand" to="/" aria-label="Drith Infra home" onClick={() => setIsMenuOpen(false)}>
-          <img src={assets.brand.logo} alt="" width="48" height="48" decoding="async" />
+        <Link className="brand brand--wordmark" to="/" aria-label="Drith Infra home" onClick={() => setIsMenuOpen(false)}>
+          <img src={assets.brand.wordmark} alt="" width="220" height="76" decoding="async" />
         </Link>
         <nav className="desktop-nav" aria-label="Primary navigation">
           {navigation.map((item) => (

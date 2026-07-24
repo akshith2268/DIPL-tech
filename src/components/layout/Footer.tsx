@@ -37,8 +37,8 @@ export function Footer() {
     <footer className="site-footer">
       <div className="shell site-footer__card glass-panel">
         <div className="footer-brand">
-          <Link className="brand" to="/" aria-label="Drith Infra home">
-            <img src={assets.brand.logo} alt="" width="58" height="58" loading="lazy" decoding="async" />
+          <Link className="brand brand--wordmark" to="/" aria-label="Drith Infra home">
+            <img src={assets.brand.wordmark} alt="" width="220" height="76" loading="lazy" decoding="async" />
           </Link>
           <p>Engineering coastal resilience with nature, evidence, and shared responsibility.</p>
           <a href="mailto:drithinfra.pvt@gmail.com">

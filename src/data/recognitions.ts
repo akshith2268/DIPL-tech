@@ -15,6 +15,7 @@ export const recognitions: readonly Recognition[] = [
     image: assets.recognition.dpiit,
     imageAlt: "DPIIT Startup India certificate for Drith Infra",
     date: "DPIIT Recognition",
+    expandable: true,
   },
   {
     title: "Representative | Savitribai Phule Pune University",
@@ -29,6 +30,7 @@ export const recognitions: readonly Recognition[] = [
     image: assets.recognition.dainikBhaskar,
     imageAlt: "Dainik Bhaskar newspaper feature on Drith Infra coastal protection innovation",
     date: "DB Newspaper",
+    expandable: true,
   },
   {
     title: "Entrepreneurial Talk | JSPM",

@@ -1,0 +1,187 @@
+.recognition-card__expand {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  padding: 0;
+  overflow: hidden;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 18px;
+  cursor: zoom-in;
+}
+
+.recognition-card__expand img {
+  width: 100%;
+  height: 100%;
+}
+
+.recognition-card__expand > span {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 11px;
+  color: var(--white);
+  background: color-mix(in srgb, var(--ink) 78%, transparent);
+  border: 1px solid color-mix(in srgb, var(--white) 72%, transparent);
+  border-radius: 999px;
+  backdrop-filter: blur(14px);
+  font-family: var(--font-display);
+  font-size: 0.67rem;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--ink) 22%, transparent);
+}
+
+.recognition-card__expand > span svg {
+  flex: 0 0 auto;
+}
+
+.recognition-card__expand:hover > span,
+.recognition-card__expand:focus-visible > span {
+  background: var(--ink);
+}
+
+.recognition-card__expand:focus-visible {
+  outline: 3px solid var(--sea);
+  outline-offset: -4px;
+}
+
+.recognition-lightbox {
+  position: fixed;
+  z-index: 600;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(12px, 3vw, 28px);
+  background: color-mix(in srgb, var(--ink) 82%, transparent);
+  backdrop-filter: blur(18px) saturate(120%);
+  animation: recognition-lightbox-in 0.2s both;
+}
+
+.recognition-lightbox__dialog {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  width: min(96vw, 1200px);
+  max-height: 94svh;
+  overflow: auto;
+  padding: clamp(14px, 2vw, 22px);
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--paper) 94%, transparent),
+    color-mix(in srgb, var(--foam) 90%, transparent)
+  );
+  border: 1px solid color-mix(in srgb, var(--white) 84%, transparent);
+  border-radius: clamp(20px, 3vw, 30px);
+  box-shadow: 0 34px 90px color-mix(in srgb, var(--ink) 48%, transparent);
+  animation: recognition-dialog-in 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.recognition-lightbox__dialog header {
+  padding-right: 56px;
+}
+
+.recognition-lightbox__dialog .eyebrow {
+  margin-bottom: 5px;
+}
+
+.recognition-lightbox__dialog h2 {
+  margin: 0;
+  font-size: clamp(1.25rem, 3vw, 2rem);
+}
+
+.recognition-lightbox__dialog > img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: calc(94svh - 130px);
+  margin-inline: auto;
+  object-fit: contain;
+  background: var(--white);
+  border-radius: 14px;
+}
+
+.recognition-lightbox__close {
+  position: absolute;
+  z-index: 2;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: var(--white);
+  background: color-mix(in srgb, var(--ink) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--white) 78%, transparent);
+  border-radius: 50%;
+  cursor: pointer;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--ink) 24%, transparent);
+}
+
+.recognition-lightbox__close:hover,
+.recognition-lightbox__close:focus-visible {
+  background: var(--sea);
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+}
+
+@keyframes recognition-lightbox-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes recognition-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+}
+
+@media (max-width: 720px) {
+  .recognition-card__expand {
+    border-radius: 20px;
+  }
+
+  .recognition-card__expand > span {
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .recognition-lightbox {
+    padding: 10px;
+  }
+
+  .recognition-lightbox__dialog {
+    width: 100%;
+    max-height: 96svh;
+    padding: 12px;
+    border-radius: 22px;
+  }
+
+  .recognition-lightbox__dialog > img {
+    max-height: calc(96svh - 122px);
+    border-radius: 12px;
+  }
+
+  .recognition-lightbox__close {
+    top: 10px;
+    right: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recognition-lightbox,
+  .recognition-lightbox__dialog {
+    animation: none;
+  }
+}

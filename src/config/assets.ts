@@ -9,6 +9,7 @@ const PARTNER_CDN_ROOT = "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/ob
 export const assets = {
   brand: {
     logo: `${LOCAL_ROOT}/images/brand/drith-logo.png`,
+    wordmark: `${LOCAL_ROOT}/images/brand/drith-infra-wordmark.webp`,
   },
   projects: {
     coast: "https://ovqxuakoekllsxzvnmvx.supabase.co/storage/v1/object/public/DIPL-tech-Galllery/Project/tatrakshak.webp",

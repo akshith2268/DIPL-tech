@@ -67,6 +67,28 @@
   position: relative;
 }
 
+.site-header .brand--wordmark img,
+.site-header--home .brand--wordmark img {
+  width: clamp(128px, 15vw, 174px);
+  height: auto;
+  max-height: 48px;
+  object-fit: contain;
+  object-position: left center;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.site-footer .brand--wordmark img {
+  width: min(220px, 68vw);
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+  object-position: left center;
+  border-radius: 0;
+}
+
 .site-header .header-cta,
 .site-header--home .header-cta,
 .site-header .menu-toggle,
@@ -110,4 +132,12 @@
   box-shadow:
     0 22px 54px rgba(0, 0, 0, 0.2),
     inset 0 1px rgba(255, 255, 255, 0.86) !important;
+}
+
+@media (max-width: 520px) {
+  .site-header .brand--wordmark img,
+  .site-header--home .brand--wordmark img {
+    width: 104px;
+    max-height: 38px;
+  }
 }
